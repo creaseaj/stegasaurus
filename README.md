@@ -1,6 +1,6 @@
 # Stegasaurus
 ## Notion
-This project is using notion to help manage tickets and sprints. To view the current sprint,along with previous ones and the project's progress, [click here](https://stegasaurus.notion.site/Project-State-577874af1cb542309b7066f52f9c30a6).
+This project is using notion to help manage tickets and sprints. To view the current sprint, along with previous ones and the project's progress, [click here](https://stegasaurus.notion.site/Project-State-577874af1cb542309b7066f52f9c30a6).
 ## Project Vision
 
 This is for malware researchers and people searching for signs of steganography who want to investigate images to help identify the presence of malware and hidden communications. Stegasaurus is a web app that provides a toolkit for steganography and steganalysis which provides a unified user interface across different devices, allowing for investigations to be conducted collaboratively across the internet.
