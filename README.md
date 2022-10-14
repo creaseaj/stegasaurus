@@ -23,5 +23,3 @@ Session keys are improperly stored.
 Steganalysis Implementation can take longer due to the packages available
 
 *This could result that the Steganalysis implementation will go into another sprint. Because these features are essential a less important sprint will be removed to ensure that a quality core to the project is present.*
-
----
