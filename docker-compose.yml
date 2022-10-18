@@ -28,13 +28,18 @@ services:
             - meilisearch
             - mailhog
             - selenium
-    react:
-        build: ./client
+    client:
+        container_name: client
+        build:
+            context: ./client
+            dockerfile: Dockerfile
         volumes:
-            - ./client:/app
-            - /app/node_modules
-        ports: 
-            - 3000:3000
+        - './client:/app'
+        - '/app/node_modules'
+        ports:
+        - 3001:3000
+        environment:
+        - CHOKIDAR_USEPOLLING=true
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
