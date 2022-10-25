@@ -23,10 +23,8 @@ const File = () => {
         }
     };
     useEffect(() => {
-        console.log({ 'output': output })
         handleFileChosen()
     }, [image])
-    // console.log(output && Buffer.from(output, 'utf-8').toString('hex').match(/.{1,4}/g))
     console.log(output)
     const Patches = () => {
         return (<div className='flex gap-[1px] flex-wrap'>
