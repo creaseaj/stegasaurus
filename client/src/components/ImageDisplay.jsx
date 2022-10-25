@@ -16,7 +16,7 @@ const ImageDisplay = () => {
     }, [])
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
-        accept: 'image/*',
+        accept: 'image/png',
         maxFiles: 1
     })
     return (

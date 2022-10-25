@@ -3,38 +3,42 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux'
 import { Stego } from '../images/StegoLogo'
 import { Buffer } from 'buffer'
+import { useEffect } from 'react';
+
 const File = () => {
     let fileReader;
     const [output, setOutput] = useState(null)
+    const image = useSelector((state) => state.image.preview)
     const handleFileRead = (e) => {
         const content = fileReader.result;
         setOutput(content)
     };
     const handleFileChosen = () => {
-        console.log('clicked!')
         if (image) {
-            console.log({ 'image': image })
             fetch(image).then(res => res.blob()).then(blob => {
                 fileReader = new FileReader();
                 fileReader.onloadend = handleFileRead;
-                fileReader.readAsText(blob);
+                fileReader.readAsBinaryString(blob);
             });
         }
     };
-    console.log(output && Buffer.from(output, 'utf-8').toString('hex').match(/.{1,4}/g))
+    useEffect(() => {
+        console.log({ 'output': output })
+        handleFileChosen()
+    }, [image])
+    // console.log(output && Buffer.from(output, 'utf-8').toString('hex').match(/.{1,4}/g))
     console.log(output)
-    const Patches = <div>
-        {output && Buffer.from(output, 'utf-8').toString('hex').split("(?=(.{4})+$)").map((patch, index) => {
-            <div>
-                {patch}
-            </div>
-        })}
-    </div>
-    const image = useSelector((state) => state.image.preview)
-    fetch(image).then(res => console.log(res))
+    const Patches = () => {
+        return (<div className='flex gap-[1px] flex-wrap'>
+            {output && Buffer.from(output, 'binary').toString('hex').match(/.{1,2}/g).map((patch, index) =>
+                <div key={index} className='flex hover:bg-slate-700 transition-all bg-transparent cursor-default p-[1px] rounded-[4px]'>
+                    {patch}
+                </div>
+            )}
+        </div>)
+    }
     return (
         <div>
-            <button onClick={handleFileChosen}>Click</button>
             <div className='font-mono break-all '>
                 <Patches />
             </div>
