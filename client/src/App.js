@@ -18,10 +18,7 @@ function App() {
           Tools
         </div>
       </div>
-      <div className='bg-[#1E293B] h-full mt-[10px] mx-[10px] rounded-[10px] p-[10px] text-slate-200'>
-        File Reader
-        <File />
-      </div>
+      <File />
     </>
   );
 }
