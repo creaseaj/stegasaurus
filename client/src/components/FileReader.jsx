@@ -1,46 +1,61 @@
-import React from 'react'
-import { useState } from 'react';
+import React, { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Stego } from '../images/StegoLogo'
 import { Buffer } from 'buffer'
-import { useEffect } from 'react';
+import ClipLoader from "react-spinners/ClipLoader";
 
-const File = () => {
-    let fileReader;
-    const [output, setOutput] = useState(null)
-    const image = useSelector((state) => state.image.preview)
-    const handleFileRead = (e) => {
-        const content = fileReader.result;
-        setOutput(content)
-    };
-    const handleFileChosen = () => {
-        if (image) {
-            fetch(image).then(res => res.blob()).then(blob => {
-                fileReader = new FileReader();
-                fileReader.onloadend = handleFileRead;
-                fileReader.readAsBinaryString(blob);
-            });
+const fileToHex = (file) => {
+    return new Promise((resolve) => {
+        const reader = new FileReader()
+        reader.onload = function (e) {
+            const hex = e.target.result
+            resolve(hex)
         }
-    };
-    useEffect(() => {
-        handleFileChosen()
+        reader.readAsBinaryString(file);
+
+    })
+}
+const File = () => {
+    const image = useSelector((state) => state.image.preview)
+    const [hex, setHex] = useState(null)
+
+
+    const patches = useMemo(() => {
+        const formatImage = async () => {
+            if (image) {
+                return fetch(image).then(res => res.blob()).then(async blob => {
+                    const hex = await fileToHex(blob)
+                    return (Buffer.from(hex, 'binary').toString('hex'));
+                });
+            }
+            else {
+                return null;
+            }
+        }
+        const hex = formatImage()
+        return hex
     }, [image])
-    console.log(output)
-    const Patches = () => {
-        return (<div className='flex gap-[1px] flex-wrap'>
-            {output && Buffer.from(output, 'binary').toString('hex').match(/.{1,2}/g).map((patch, index) =>
-                <div key={index} className='flex hover:bg-slate-700 transition-all bg-transparent cursor-default p-[1px] rounded-[4px]'>
-                    {patch}
-                </div>
-            )}
-        </div>)
-    }
+    patches.then((data) => {
+        setHex(data)
+    })
     return (
         <div>
-            <div className='font-mono break-all '>
-                <Patches />
-            </div>
-        </div>
+
+            {image ? !hex
+                ? <div className='w-full flex justify-center items-center'> <ClipLoader color='#ddd'
+                    loading={true} />
+                </div>
+                :
+                <div className='font-mono flex break-normal w-full max-w-screen'>
+                    {hex.toString().replace(/(.{2})/g, "$1 ")}
+                </div>
+                // : hex.toString().match(/.{1,2}/g).map((patch, index) =>
+                //     <div key={index} className='flex hover:bg-slate-700 transition-all bg-transparent cursor-default p-[1px] rounded-[4px]'>
+                //         {patch}
+                //     </div>
+                // )
+                : null
+            }
+        </div >
     )
 }
 
