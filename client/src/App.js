@@ -14,8 +14,14 @@ function App() {
         <div className='w-full h-full'>
           <ImageDisplay />
         </div>
-        <div className='bg-[#1E293B] w-full max-w-[220px] h-full rounded-l-[10px] hidden lg:flex text-slate-200 p-[10px]'>
-          Tools
+        <div className='bg-[#1E293B] w-full max-w-[220px] h-full rounded-l-[10px] hidden lg:flex flex-col text-slate-200 p-[10px]'>
+          <div className='text-lg mb-[-15px]'>
+            Tools
+          </div>
+          <br />View Hex
+          <br />Extract Strings
+          <br />Metadata
+          <br />XOR
         </div>
       </div>
       <File />
