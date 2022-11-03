@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/stegasaurus/static/css/main.baae94cc.css",
-    "main.js": "/stegasaurus/static/js/main.e56fcaf9.js",
-    "static/js/787.c4e7f8f9.chunk.js": "/stegasaurus/static/js/787.c4e7f8f9.chunk.js",
-    "index.html": "/stegasaurus/index.html",
-    "main.baae94cc.css.map": "/stegasaurus/static/css/main.baae94cc.css.map",
-    "main.e56fcaf9.js.map": "/stegasaurus/static/js/main.e56fcaf9.js.map",
-    "787.c4e7f8f9.chunk.js.map": "/stegasaurus/static/js/787.c4e7f8f9.chunk.js.map"
+    "main.css": "/static/css/main.baae94cc.css",
+    "main.js": "/static/js/main.32b5b41b.js",
+    "static/js/787.c4e7f8f9.chunk.js": "/static/js/787.c4e7f8f9.chunk.js",
+    "index.html": "/index.html",
+    "main.baae94cc.css.map": "/static/css/main.baae94cc.css.map",
+    "main.32b5b41b.js.map": "/static/js/main.32b5b41b.js.map",
+    "787.c4e7f8f9.chunk.js.map": "/static/js/787.c4e7f8f9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.baae94cc.css",
-    "static/js/main.e56fcaf9.js"
+    "static/js/main.32b5b41b.js"
   ]
 }
