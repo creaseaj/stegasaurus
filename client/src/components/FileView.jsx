@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Buffer } from 'buffer'
 import ClipLoader from "react-spinners/ClipLoader";
@@ -14,42 +14,63 @@ const fileToHex = (file) => {
 
     })
 }
+const formatImage = async (image) => {
+    if (image) {
+        return fetch(image).then(res => res.blob()).then(async blob => {
+            const hex = await fileToHex(blob)
+            return (Buffer.from(hex, 'binary').toString('hex'));
+        });
+    }
+    else {
+        return '';
+    }
+}
+
+const renderHex = (hex) => {
+    return hex.toString().replace(/(.{2})/g, "$1 ")
+}
+const renderStrings = (hex) => {
+    const text = Buffer.from(hex, 'hex').toString('ASCII')
+    console.log(text);
+    return text.match(/\w+/g).join(', ')
+}
+
 const FileView = () => {
     const image = useSelector((state) => state.image.preview)
     const view = useSelector((state) => state.image.view)
     const [hex, setHex] = useState('')
 
-    const patches = useMemo(() => {
-        console.log('running patches');
-        const formatImage = async () => {
-            if (image) {
-                return fetch(image).then(res => res.blob()).then(async blob => {
-                    const hex = await fileToHex(blob)
-                    return (Buffer.from(hex, 'binary').toString('hex'));
-                });
-            }
-            else {
-                return '';
-            }
-        }
-        const hex = formatImage()
-        return hex
+    useEffect(() => {
+        formatImage(image).then(setHex)
     }, [image])
-    patches.then((data) => {
-        if (data === '') return;
-        setHex(data)
-    })
+
+    // Show different UI Elements based on view
+    const RenderView = () => {
+        switch (view) {
+            case 'strings':
+                return renderStrings(hex);
+            case 'metadata':
+                return (<p>Metadata</p>)
+            case 'xor':
+                return (<p>xor</p>)
+            default: // Also 'hex'
+                return renderHex(hex);
+
+        }
+    }
+
+    if (!image) return null;
     return (
         <div className='flex items-center justify-center p-4 m-4 rounded-md text-slate-200 bg-primary-light'>
-            {image ? hex === ''
-                ? <div className='flex items-center justify-center'> <ClipLoader color='#ddd'
-                    loading={true} />
-                </div>
+            {hex ?
+                <RenderView />
                 :
-                <div className='flex justify-center mx-auto overflow-auto font-mono break-words'>
-                    {hex.toString().replace(/(.{2})/g, " $1 ") ?? ''}
+                <div className='flex items-center justify-center'>
+                    <ClipLoader
+                        color='#ddd'
+                        loading={true}
+                    />
                 </div>
-                : view
             }
         </div >
     )

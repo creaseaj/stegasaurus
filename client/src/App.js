@@ -25,7 +25,6 @@ function App() {
           <ToolPicker/>
         </div>
       </div>
-      
       <FileView />
     </>
   );
