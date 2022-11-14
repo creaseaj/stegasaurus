@@ -14,12 +14,13 @@ const fileToHex = (file) => {
 
     })
 }
-const File = () => {
+const FileView = () => {
     const image = useSelector((state) => state.image.preview)
-    const [hex, setHex] = useState(null)
-
+    const view = useSelector((state) => state.image.view)
+    const [hex, setHex] = useState('')
 
     const patches = useMemo(() => {
+        console.log('running patches');
         const formatImage = async () => {
             if (image) {
                 return fetch(image).then(res => res.blob()).then(async blob => {
@@ -28,35 +29,30 @@ const File = () => {
                 });
             }
             else {
-                return null;
+                return '';
             }
         }
         const hex = formatImage()
         return hex
     }, [image])
     patches.then((data) => {
+        if (data === '') return;
         setHex(data)
     })
     return (
-        <div>
-
-            {image ? !hex
-                ? <div className='w-full flex justify-center items-center'> <ClipLoader color='#ddd'
+        <div className='flex items-center justify-center p-4 m-4 rounded-md text-slate-200 bg-primary-light'>
+            {image ? hex === ''
+                ? <div className='flex items-center justify-center'> <ClipLoader color='#ddd'
                     loading={true} />
                 </div>
                 :
-                <div className='font-mono flex break-normal w-full max-w-screen'>
-                    {hex.toString().replace(/(.{2})/g, "$1 ")}
+                <div className='flex justify-center mx-auto overflow-auto font-mono break-words'>
+                    {hex.toString().replace(/(.{2})/g, " $1 ") ?? ''}
                 </div>
-                // : hex.toString().match(/.{1,2}/g).map((patch, index) =>
-                //     <div key={index} className='flex hover:bg-slate-700 transition-all bg-transparent cursor-default p-[1px] rounded-[4px]'>
-                //         {patch}
-                //     </div>
-                // )
-                : null
+                : view
             }
         </div >
     )
 }
 
-export default File
+export default FileView

@@ -7,14 +7,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setPreview } from './imageSlice'
 const ImageDisplay = () => {
     const image = useSelector((state) => state.image.preview)
+
     const dispatch = useDispatch()
     const [isError, setIsError] = useState(false)
     const onDrop = useCallback(acceptedFiles => {
-        console.log(acceptedFiles)
         const file = acceptedFiles[0]
         dispatch(setPreview(URL.createObjectURL(file)));
     }, [dispatch])
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    const { getRootProps, getInputProps, fileRejections } = useDropzone({
         onDrop,
         accept: { 'image/png': ['.png'] },
         maxFiles: 1
