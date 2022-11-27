@@ -26,3 +26,4 @@ Route::get('/test', function () {
 Route::post('images', [FileuploadController::class, 'store']);
 Route::get('images', [FileuploadController::class, 'list']);
 Route::get('images/{id}', [FileuploadController::class, 'show']);
+Route::delete('images/{id}', [FileuploadController::class, 'delete']);

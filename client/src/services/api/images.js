@@ -9,6 +9,9 @@ const images =  {
     },
     uploadImage: (image) => {
         return axios.post('http://localhost:80/api/images', image);
+    },
+    deleteImage: (id) => {
+        return axios.delete(`http://localhost:80/api/images/${id}`);
     }
 }
 
