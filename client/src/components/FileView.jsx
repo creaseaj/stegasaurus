@@ -36,11 +36,6 @@ const renderStrings = (hex) => {
     console.log(text);
     return text.match(/\w+/g).join(', ')
 }
-const renderSteghide = (id) => {
-    return ApiClient.images.checkSteghide(id).then(res => {
-        return res.data.data;
-    });
-}
 
 const FileView = () => {
     const { imageId } = useParams()
@@ -49,9 +44,11 @@ const FileView = () => {
     const [hex, setHex] = useState('')
     const [steghide, setSteghide] = useState('')
     useEffect(() => {
-        ApiClient.images.checkSteghide(imageId).then(res => {
-            setSteghide(res.data.data);
-        });
+        if (imageId) {
+            ApiClient.images.checkSteghide(imageId).then(res => {
+                setSteghide(res.data.data);
+            });
+        }
     })
     useEffect(() => {
         formatImage(image).then(setHex)

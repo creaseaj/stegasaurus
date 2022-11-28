@@ -43,7 +43,7 @@ class Fileupload extends Model
         Storage::makeDirectory('steg');
         Storage::put('steg/test.txt', $text);
         logger(Storage::get('steg/test.txt'));
-        $command = "steghide embed -cf /var/www/html/public/images/" . $this->filename . " -ef  /var/www/html/storage/app/test.txt -p ''";
+        $command = "steghide embed -cf /var/www/html/public/images/" . $this->filename . " -ef  /var/www/html/storage/app/steg/test.txt -p ''";
         exec($command, $output, $result_code);
         Storage::delete('steg/test.txt');
         return $output;

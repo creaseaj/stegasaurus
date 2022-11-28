@@ -12,10 +12,12 @@ function Editor() {
 
     const { imageId } = useParams();
     useEffect(() => {
-        dispatch(setPreview(null))
-        images.getImage(imageId).then((res) => {
-            dispatch(setPreview('http://localhost/images/' + res.data.data.filename));
-        });
+        if (imageId) {
+            dispatch(setPreview(null))
+            images.getImage(imageId).then((res) => {
+                dispatch(setPreview('http://localhost/images/' + res.data.data.filename));
+            });
+        }
     }, [])
     return (
         <>
