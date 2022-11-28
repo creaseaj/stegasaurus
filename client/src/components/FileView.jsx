@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Buffer } from 'buffer'
 import ClipLoader from "react-spinners/ClipLoader";
+import ApiClient from '../services/api/ApiClient';
+import { useParams } from 'react-router-dom';
 
 const fileToHex = (file) => {
     return new Promise((resolve) => {
@@ -34,12 +36,23 @@ const renderStrings = (hex) => {
     console.log(text);
     return text.match(/\w+/g).join(', ')
 }
+const renderSteghide = (id) => {
+    return ApiClient.images.checkSteghide(id).then(res => {
+        return res.data.data;
+    });
+}
 
 const FileView = () => {
+    const { imageId } = useParams()
     const image = useSelector((state) => state.image.preview)
     const view = useSelector((state) => state.image.view)
     const [hex, setHex] = useState('')
-
+    const [steghide, setSteghide] = useState('')
+    useEffect(() => {
+        ApiClient.images.checkSteghide(imageId).then(res => {
+            setSteghide(res.data.data);
+        });
+    })
     useEffect(() => {
         formatImage(image).then(setHex)
     }, [image])
@@ -53,6 +66,8 @@ const FileView = () => {
                 return (<p>Metadata</p>)
             case 'xor':
                 return (<p>xor</p>)
+            case 'steg':
+                return steghide;
             default: // Also 'hex'
                 return renderHex(hex);
 

@@ -58,24 +58,14 @@ class FileuploadController extends Controller
             'filename' => $fileupload->filename
         ]);
     }
-    // public function store(Request $request)
-    // {
-    //     if ($request->get('file')) {
-    //         logger($request);
-    //         $image = $request->get('file');
-    //         $name = time() . '.' . 'test';
 
-    //         // explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
-    //         Image::make($request->get('file'))->save(public_path('images/') . $name);
-    //         $fileupload = new Fileupload();
-    //         $fileupload->filename = $name;
-    //         $fileupload->save();
-    //         return response()->json('Successfully added');
-    //     }
-    // }
-    // public function list()
-    // {
-    //     $fileuploads = Fileupload::all();
-    //     return response()->json($fileuploads);
-    // }
+    public function steg($id)
+    {
+        $fileupload = Fileupload::find($id);
+        $output = $fileupload->runSteghide();
+        return response()->json([
+            'message' => 'Image steghide',
+            'data' => $output
+        ]);
+    }
 }

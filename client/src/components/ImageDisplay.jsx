@@ -18,7 +18,7 @@ const ImageDisplay = () => {
     }, [dispatch])
     const { getRootProps, getInputProps, fileRejections } = useDropzone({
         onDrop,
-        accept: { 'image/png': ['.png'] },
+        // accept: { 'image/png': ['.png'] },
         maxFiles: 1
     })
     const fileUpload = (file) => {

@@ -38,6 +38,11 @@ const ToolPicker = () => {
                 onClick={() => dispatch(setView('xor'))}>
                 XOR
             </ToolButton>
+            <ToolButton
+                active={view === 'steg'}
+                onClick={() => dispatch(setView('steg'))}>
+                Steghide
+            </ToolButton>
         </div>
     )
 }

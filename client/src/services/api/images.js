@@ -12,6 +12,9 @@ const images =  {
     },
     deleteImage: (id) => {
         return axios.delete(`http://localhost:80/api/images/${id}`);
+    },
+    checkSteghide: (id) => {
+        return axios.get(`http://localhost:80/api/images/${id}/steg`);
     }
 }
 
