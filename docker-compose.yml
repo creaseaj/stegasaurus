@@ -6,7 +6,7 @@ services:
             context: ./mitmproxy
             dockerfile: Dockerfile
         ports:
-            - '${FORWARD_MITMPROXY_PORT:-8080}:8080'
+            - '${FORWARD_MITMPROXY_PORT:-8180}:8080'
         volumes:
             - './mitmproxy/scripts:/home/mitmproxy/addons'
             - './mitmproxy/images:/home/images'
