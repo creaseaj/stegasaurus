@@ -22,14 +22,14 @@ function Editor() {
     return (
         <>
             <div className='gap-[30px] mt-[35px] h-[550px] flex'>
-                <div className='bg-[#1E293B] w-full max-w-[220px] h-full rounded-r-[10px] px-[20px] py-[15px] text-slate-200 hidden lg:flex'>
+                <div className='bg-[#1E293B] w-full max-w-[220px] h-full rounded-r-[10px] px-[20px] py-[15px] text-slate-200 opacity-0  font-bold text-lg'>
                     Bookmarks
                 </div>
                 <div className='w-full h-full'>
                     <ImageDisplay />
                 </div>
                 <div className='bg-[#1E293B] w-full max-w-[220px] h-full rounded-l-[10px] hidden lg:flex flex-col text-slate-200 p-[10px] pr-[0px]'>
-                    <div className='text-lg'>
+                    <div className='text-lg font-bold'>
                         Tools
                     </div>
                     <ToolPicker />
