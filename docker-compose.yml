@@ -10,6 +10,7 @@ services:
         volumes:
             - './mitmproxy/scripts:/home/mitmproxy/addons'
             - './mitmproxy/images:/home/images'
+            - 'mitmproxy:/home/mitmproxy/.mitmproxy'
         networks:
             - sail
     laravel.test:
@@ -120,6 +121,8 @@ networks:
     sail:
         driver: bridge
 volumes:
+    mitmproxy:
+        driver: local
     sail-mysql:
         driver: local
     sail-redis:
