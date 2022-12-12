@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Fileupload;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
@@ -18,16 +19,16 @@ class FileuploadController extends Controller
     }
     public function store(Request $request)
     {
-        $request->validate([
-            'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-        $imageName = time() . '.' . $request->file->extension();
+        $originalName = $request->file('file')->getClientOriginalName();
+        $imageName = time() . '_' . $originalName .  '.' . $request->file->extension();
         $request->file->move(public_path('images'), $imageName);
         $image = Image::make(public_path('images/' . $imageName));
         $image->save();
         $fileupload = new Fileupload();
         $fileupload->filename = $imageName;
         $fileupload->save();
+        // Run steghide on the image to check to see if it's possible
+        $fileupload->runSteghide();
         return response()->json([
             'message' => 'Image uploaded successfully',
             'filename' => $imageName
