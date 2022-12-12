@@ -1,6 +1,7 @@
 from mitmproxy import http
 import os
 import time
+from urllib.parse import unquote
 
 def response(flow: http.HTTPFlow):
     if flow.response.headers.get("content-type", "").endswith(('jpg', 'jpeg')):
@@ -11,7 +12,7 @@ def response(flow: http.HTTPFlow):
 
         if not os.path.exists("/home/images/%s/%s"%(domain,str(port))):
             os.mkdir("/home/images/%s/%s"%(domain,str(port)))
-        filename = flow.request.path.split('/')[-1].split('?')[0]
+        filename = unquote(flow.request.path).split('/')[-1].split('?')[0]
         ## append filetype to filename if it doesn't have one
         if filename.find('.') == -1:
             if flow.response.headers.get("content-type", "").endswith('jpg'):
