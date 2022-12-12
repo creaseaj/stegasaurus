@@ -1,6 +1,17 @@
 # For more information: https://laravel.com/docs/sail
 version: '3'
 services:
+    mitmproxy:
+        build:
+            context: ./mitmproxy
+            dockerfile: Dockerfile
+        ports:
+            - '${FORWARD_MITMPROXY_PORT:-8080}:8080'
+        volumes:
+            - './mitmproxy/scripts:/home/mitmproxy/addons'
+            - './mitmproxy/images:/home/images'
+        networks:
+            - sail
     laravel.test:
         build:
             context: ./backend
