@@ -1,3 +1,5 @@
 .env
 mitmproxy/scripts/__pycache__
 mitmproxy/images
+mitmproxy/wordlists
+mitmproxy/inproxy/log.txt

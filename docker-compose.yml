@@ -1,10 +1,18 @@
 # For more information: https://laravel.com/docs/sail
 version: '3'
 services:
+    inproxy:
+        build:
+            context: ./mitmproxy
+            dockerfile: inproxy_Dockerfile
+        volumes:
+            - './mitmproxy/wordlists:/steg'
+            - './mitmproxy/inproxy:/home'
+            - './mitmproxy/images:/images'
     mitmproxy:
         build:
             context: ./mitmproxy
-            dockerfile: Dockerfile
+            dockerfile: mitmproxy_Dockerfile
         ports:
             - '${FORWARD_MITMPROXY_PORT:-8180}:8080'
         volumes:
