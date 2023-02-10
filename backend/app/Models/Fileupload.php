@@ -5,12 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Fileupload extends Model
+class Fileupload extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
     protected $fillable = [
-        'filename'
+        'filename',
+        'user_id'
     ];
 
     public function getStoragePathAttribute()
@@ -18,10 +22,29 @@ class Fileupload extends Model
         return 'steg-' . $this->id;
     }
 
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+        ->width(368)
+            ->height(232)
+            ->sharpen(10);
+    }
+
+    public function getThumbnailAttribute()
+    {
+        // logger($this->getFirstMedia->getTemporaryUrl(now()->addMinutes(5), 'thumb'));
+        return ($this->getFirstMedia()->getTemporaryUrl(now()->addMinutes(5), 'thumb'));
+    }
+
+    public function getUrlAttribute()
+    {
+        // logger($this->getFirstMedia->getTemporaryUrl(now()->addMinutes(5), 'thumb'));
+        return $this->getFirstMedia()->getTemporaryUrl(now()->addMinutes(5));
+    }
+
     public function runSteghide()
     {
         if (!Storage::exists($this->storage_path)) {
-
             Storage::makeDirectory($this->storage_path);
             $command = "cd /var/www/html/storage/app/steg-" . $this->id . "/ && steghide extract -sf /var/www/html/public/images/" . $this->filename . " -p ''";
             $files = Storage::allFiles($this->storage_path);
@@ -30,7 +53,6 @@ class Fileupload extends Model
             return $files;
         } else {
             if (count(Storage::allFiles($this->storage_path))) {
-
                 return Storage::get(Storage::allFiles($this->storage_path)[0]);
             } else {
                 Storage::deleteDirectory($this->storage_path);
@@ -47,5 +69,9 @@ class Fileupload extends Model
         exec($command, $output, $result_code);
         Storage::delete('steg/test.txt');
         return $output;
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
