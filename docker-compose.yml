@@ -9,6 +9,10 @@ services:
             - './mitmproxy/wordlists:/steg'
             - './mitmproxy/inproxy:/home'
             - './mitmproxy/images:/images'
+        environment:
+            - API_KEY=33cf22f5-d953-4e48-ac1a-450c99d2ee39 
+        networks:
+            - sail      
     mitmproxy:
         build:
             context: ./mitmproxy
