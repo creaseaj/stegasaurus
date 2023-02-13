@@ -4,15 +4,20 @@
             {{ __('Media') }}
         </h2>
     </x-slot>
+
     <div class="max-w-6xl mx-auto my-2">
         @if (session('status') === 'deleted-success')
         <p x-data="{ show: true }" x-transition x-init="setTimeout(() => show = false, 5000)" :class='"text-sm text-gray-100 bg-red-500 p-2 rounded-sm w-full transition-all transition-duration-1000 " + (show ? "opacity-100" : "opacity-0") '>{{ __('Deleted.') }}</p>
         @endif
     </div>
-    <div class="py-6 max-w-7xl mx-auto px-6 sm:px-0" x-data="{isGrid:false}">
-        <button @click="isGrid = !isGrid">
-            Toggle
-        </button>
+    <div class="py-6 max-w-7xl mx-auto px-6 sm:px-0" x-data="{isGrid:$persist(true)}">
+        <div class="flex p-2 bg-slate-800 w-max rounded-md gap-4 relative overflow-hidden" @click="isGrid = !isGrid">
+            <x-list-grid />
+            <x-list-icon />
+            <div :class='"h-full bg-sky-200 absolute top-0 bottom-0 opacity-50 rounded-md transition-all " + (isGrid ? "left-0  right-[50%]" : "right-0 left-[50%]")'>
+
+            </div>
+        </div>
         <div x-show="!isGrid" class="w-full">
             <table class="table-auto rounded-md overflow-hidden mx-auto text-lg relative">
                 <thead class="bg-slate-800 text-slate-200 w-full">
