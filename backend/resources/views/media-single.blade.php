@@ -10,6 +10,6 @@
         @endif
     </div>
     <div class="max-w-7xl mx-auto flex justify-center">
-        <img src="{{ $media->url }}" alt="{{ $media->filename }}" class="object-fit max-w-[500px] max-h-[500px] h-full w-full" />
+        <img src="{{ $media->url }}" alt="{{ $media->filename }}" class="object-contain max-w-[500px] max-h-[500px] h-full w-full" />
     </div>
 </x-app-layout>
