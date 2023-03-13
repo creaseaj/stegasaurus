@@ -25,20 +25,16 @@ class Fileupload extends Model implements HasMedia
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
-        ->width(368)
-            ->height(232)
-            ->sharpen(10);
+        ->width(350)->sharpen(10);
     }
 
     public function getThumbnailAttribute()
     {
-        // logger($this->getFirstMedia->getTemporaryUrl(now()->addMinutes(5), 'thumb'));
         return ($this->getFirstMedia()->getTemporaryUrl(now()->addMinutes(5), 'thumb'));
     }
 
     public function getUrlAttribute()
     {
-        // logger($this->getFirstMedia->getTemporaryUrl(now()->addMinutes(5), 'thumb'));
         return $this->getFirstMedia()->getTemporaryUrl(now()->addMinutes(5));
     }
 

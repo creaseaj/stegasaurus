@@ -3,8 +3,8 @@ from mitmproxy import http
 import time
 import os
 import io
-from PIL import Image
-import numpy as np
+# from PIL import Image
+# import numpy as np
 import math
 
 
@@ -29,19 +29,20 @@ def response(flow: http.HTTPFlow):
 
         # add timestamp to filename
         filename = str(int(time.time())) + '_' + filename
-        img = Image.open(io.BytesIO(flow.response.content))
-        width, height = img.size
-        lsbVar = 0
-        for y in range(0, height):
-            for x in range(0, width):
-                r, g, b = img.getpixel((x, y))
-                for i in img.getpixel((x, y)):
-                    lsbVar += i % 2
-        lsbVar /= (width * height * 3)
-        print("This image is probably encrypted", lsbVar)
-        print(Spam(img))
-        open("/home/images/%s/%d/%s" %
-             (domain, port, filename), "wb").write(flow.response.content)
+        open("/home/images/%s/%d/%s"%(domain,port,filename), "wb").write(flow.response.content)
+        # img = Image.open(io.BytesIO(flow.response.content))
+        # width, height = img.size
+        # lsbVar = 0
+        # for y in range(0, height):
+        #     for x in range(0, width):
+        #         r, g, b = img.getpixel((x, y))
+        #         for i in img.getpixel((x, y)):
+        #             lsbVar += i % 2
+        # lsbVar /= (width * height * 3)
+        # print("This image is probably encrypted", lsbVar)
+        # # print(Spam(img))
+        # open("/home/images/%s/%d/%s" %
+        #      (domain, port, filename), "wb").write(flow.response.content)
         flow.response.headers["content-type"] = "image/jpeg"
 
 

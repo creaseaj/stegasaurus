@@ -6,6 +6,7 @@ use App\Http\Resources\FileUpload as ResourcesFileUpload;
 use App\Http\Resources\FileUploadCollection;
 use App\Models\Fileupload;
 use App\Models\User;
+use App\Notifications\FileScanned;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -57,6 +58,8 @@ class FileuploadController extends Controller
         $fileupload->width = $image->getWidth();
         $fileupload->addMediaFromRequest('file')->toMediaCollection('default', 's3');
         $fileupload->save();
+        logger($fileupload);
+        $user->notify((new FileScanned($fileupload))->afterCommit());
         return response()->json([
             'message' => 'Image uploaded successfully',
             // 'filename' => $fileupload->getFirstMedia()->getTemporaryUrl(now()->addMinutes(5)),
