@@ -1,5 +1,4 @@
 #!/bin/bash
-
 echo 'api key:' $1
 
 inotifywait -r -m /images -e create |
@@ -20,7 +19,7 @@ inotifywait -r -m /images -e create |
             if [ $? -ne 0 ] ; then
             echo "Error: ""$m"
             fi
-            rm $output_path
+            rm $image_path
         fi
         # do something with the file
     done

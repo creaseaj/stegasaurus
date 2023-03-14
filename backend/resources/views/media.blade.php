@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
             {{ __('Media') }}
         </h2>
     </x-slot>
@@ -10,8 +10,8 @@
         <p x-data="{ show: true }" x-transition x-init="setTimeout(() => show = false, 5000)" :class='"text-sm text-gray-100 bg-red-500 p-2 rounded-sm w-full transition-all transition-duration-1000 " + (show ? "opacity-100" : "opacity-0") '>{{ __('Deleted.') }}</p>
         @endif
     </div>
-    <div class="py-6 max-w-7xl mx-auto px-6 sm:px-0" x-data="{isGrid:$persist(true)}">
-        <div class="flex p-2 bg-slate-800 w-max rounded-md gap-4 relative overflow-hidden" @click="isGrid = !isGrid">
+    <div class="px-6 py-6 mx-auto max-w-7xl sm:px-0" x-data="{isGrid:$persist(true)}">
+        <div class="relative flex gap-4 p-2 overflow-hidden rounded-md bg-slate-800 w-max" @click="isGrid = !isGrid">
             <x-list-grid />
             <x-list-icon />
             <div :class='"h-full bg-sky-200 absolute top-0 bottom-0 opacity-50 rounded-md transition-all " + (isGrid ? "left-0  right-[50%]" : "right-0 left-[50%]")'>
@@ -19,8 +19,8 @@
             </div>
         </div>
         <div x-show="!isGrid" class="w-full">
-            <table class="table-auto rounded-md overflow-hidden mx-auto text-lg relative">
-                <thead class="bg-slate-800 text-slate-200 w-full">
+            <table class="relative mx-auto overflow-hidden text-lg rounded-md table-auto">
+                <thead class="w-full bg-slate-800 text-slate-200">
                     <tr>
                         <th>
                             Filename
@@ -32,17 +32,21 @@
                             Date Created
                         </th>
                         <th>
+                            Stegged
+                        </th>
+                        <th>
                             Actions
                         </th>
                     </tr>
                 </thead>
                 <tbody class="bg-slate-700 text-slate-200 ">
                     @foreach ($media as $item)
-                    <tr class="group cursor-pointer">
-                        <td class="p-1 group-hover:bg-slate-800 transition-all"> {{ $item->filename }} </td>
-                        <td class="p-1 group-hover:bg-slate-800 transition-all"> {{ $item->getFirstMedia()->human_readable_size }} </td>
-                        <td class="p-1 group-hover:bg-slate-800 transition-all"> {{ $item->created_at }} </td>
-                        <td class="p-1 group-hover:bg-slate-800 transition-all">
+                    <tr class="cursor-pointer group">
+                        <td class="p-1 transition-all group-hover:bg-slate-800"> {{ $item->filename }} </td>
+                        <td class="p-1 transition-all group-hover:bg-slate-800"> {{ $item->getFirstMedia()->human_readable_size }} </td>
+                        <td class="p-1 transition-all group-hover:bg-slate-800"> {{ $item->created_at }} </td>
+                        <td class="p-1 transition-all group-hover:bg-slate-800"> {{ $item->contents ? 'Yes' : 'No' }} </td>
+                        <td class="p-1 transition-all group-hover:bg-slate-800">
                             <a href="{{ route('media.id',['id'=>$item->id]) }}">View</a>
                         </td>
                     </tr>
@@ -52,7 +56,7 @@
         </div>
         <div x-show="isGrid">
             <div class="">
-                <div class="flex flex-wrap gap-2 my-2 justify-center">
+                <div class="flex flex-wrap justify-center gap-2 my-2">
                     @foreach ($media as $item)
                     @if($item)
                     <div class="text-gray-900 dark:text-gray-100 rounded-md overflow-hidden relative h-[300px] w-max group flex-auto">
@@ -69,10 +73,10 @@
             </div>
         </div>
     </div>
-    <div class="max-w-7xl mx-auto pb-2">
+    <div class="pb-2 mx-auto max-w-7xl">
         <x-pagination-links :paginator="$media" />
         @if ($media->count() === 0)
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="overflow-hidden bg-white shadow-sm dark:bg-gray-800 sm:rounded-lg">
             <div class="p-6 text-gray-900 dark:text-gray-100">
                 {{ __("No Media Found") }}
             </div>
