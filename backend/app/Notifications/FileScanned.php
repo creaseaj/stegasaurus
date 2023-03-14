@@ -10,14 +10,15 @@ use Illuminate\Notifications\Notification;
 class FileScanned extends Notification
 {
     use Queueable;
-
+    public $fileupload;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($fileupload)
     {
+        $this->fileupload = $fileupload;
         //
     }
 
@@ -40,10 +41,9 @@ class FileScanned extends Notification
      */
     public function toMail($notifiable)
     {
-        logger(array($this->fileUpload));
         return (new MailMessage)
             ->line('A new image has been detected hiding data on your network.')
-            ->action('View Here', url('/media/' . $this->id))
+            ->action('View Here', config('app.url') . '/media/' . $this->fileupload->id)
             ->line('Thank you for using our application!');
     }
 

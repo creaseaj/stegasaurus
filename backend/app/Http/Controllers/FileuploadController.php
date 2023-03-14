@@ -34,6 +34,9 @@ class FileuploadController extends Controller
             ], 401);
         }
 
+        $request->file('file')->store('images', 'local');
+        logger(($request->file('file')->path()));
+        
         $image = Image::load($request->file);
 
         $filenamewithextension = $request->file('file')->getClientOriginalName();
@@ -45,7 +48,7 @@ class FileuploadController extends Controller
         $extension = $request->file('file')->getClientOriginalExtension();
 
         //filename to store
-        $filenametostore = $filename . '_' . time() . '.' . $extension;
+        $filenametostore = $filename . '.' . $extension;
 
         // Upload File to s3
         // Storage::put($filenametostore, fopen($request->file('file'), 'r+'), 'public');
@@ -58,8 +61,10 @@ class FileuploadController extends Controller
         $fileupload->width = $image->getWidth();
         $fileupload->addMediaFromRequest('file')->toMediaCollection('default', 's3');
         $fileupload->save();
-        logger($fileupload);
-        $user->notify((new FileScanned($fileupload))->afterCommit());
+        system("wget '" . $fileupload->getFirstMedia()->getTemporaryUrl(now()->addMinutes(5)) . "' -O /var/www/html/private/" . $filenametostore, $retval);
+        system("cd /var/www/html/private && stegseek " . $filenametostore . " /var/www/html/wordlists/rockyou.txt");
+        $fileupload->contents = file_get_contents('/var/www/html/private/' . $filenametostore . '.out');
+        $fileupload->save();
         return response()->json([
             'message' => 'Image uploaded successfully',
             // 'filename' => $fileupload->getFirstMedia()->getTemporaryUrl(now()->addMinutes(5)),

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Notifications\FileScanned;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\HasMedia;
@@ -14,8 +16,21 @@ class Fileupload extends Model implements HasMedia
     use HasFactory, InteractsWithMedia;
     protected $fillable = [
         'filename',
-        'user_id'
+        'user_id',
+        'contents',
+        'contents_filename'
     ];
+
+    protected static function booted(): void
+    {
+        static::updated(
+            function ($fileupload) {
+                if ($fileupload->contents && !$fileupload->getOriginal('contents')) {
+                    User::find($fileupload->user_id)->notify((new FileScanned($fileupload))->afterCommit());
+                }
+            }
+        );
+    }
 
     public function getStoragePathAttribute()
     {
