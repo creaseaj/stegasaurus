@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+use Illuminate\Support\Str;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -46,5 +46,20 @@ class User extends Authenticatable implements MustVerifyEmail
     public function fileuploads()
     {
         return $this->hasMany(Fileupload::class);
+    }
+
+    // create api token
+    public function generateApiKey()
+    {
+        // UUID api key
+        $this->api_token = Str::uuid();
+        $this->save();
+    }
+
+    // delete api token
+    public function deleteApiKey()
+    {
+        $this->api_token = null;
+        $this->save();
     }
 }

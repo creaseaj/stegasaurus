@@ -63,7 +63,12 @@ class FileuploadController extends Controller
         $fileupload->save();
         system("wget '" . $fileupload->getFirstMedia()->getTemporaryUrl(now()->addMinutes(5)) . "' -O /var/www/html/private/" . $filenametostore, $retval);
         system("cd /var/www/html/private && stegseek " . $filenametostore . " /var/www/html/wordlists/rockyou.txt");
-        $fileupload->contents = file_get_contents('/var/www/html/private/' . $filenametostore . '.out');
+        try {
+            $fileupload->contents = file_get_contents('/var/www/html/private/' . $filenametostore . '.out');
+        } catch (\Throwable $th) {
+            logger($th->getMessage());
+            // do nothing
+        }
         $fileupload->save();
         return response()->json([
             'message' => 'Image uploaded successfully',

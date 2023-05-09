@@ -31,8 +31,8 @@
                         <th>
                             Date Created
                         </th>
-                        <th>
-                            Stegged
+                        <th class="px-2">
+                            Message Discovered
                         </th>
                         <th>
                             Actions

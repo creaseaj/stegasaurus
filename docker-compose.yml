@@ -50,8 +50,6 @@ services:
             - sail
         depends_on:
             - mysql
-            - redis
-            - meilisearch
             - mailhog
             - selenium
 
@@ -81,6 +79,13 @@ services:
         ports:
             - '${FORWARD_MAILHOG_PORT:-1025}:1025'
             - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
+        networks:
+            - sail
+
+    selenium:
+        image: 'selenium/standalone-chrome'
+        volumes:
+            - '/dev/shm:/dev/shm'
         networks:
             - sail
 

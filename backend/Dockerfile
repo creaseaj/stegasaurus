@@ -14,7 +14,7 @@ ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
-    && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 \
+    && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 libmhash2 libmcrypt4 libjpeg8 zlib1g libmhash-dev libmcrypt-dev libjpeg-dev zlib1g-dev git build-essential cmake \
     && mkdir -p ~/.gnupg \
     && chmod 600 ~/.gnupg \
     && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
@@ -47,13 +47,19 @@ RUN apt-get update \
     && apt-get install -y postgresql-client-$POSTGRES_VERSION \
     && apt-get -y autoremove \
     && apt-get clean \
-    && curl -O https://github.com/RickdeJager/stegseek/releases/download/v0.6/stegseek_0.6-1.deb \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
+
+
+RUN git clone https://github.com/RickdeJager/stegseek.git && cd stegseek && mkdir build && cd build && cmake .. && make && make install
+
+
+# RUN curl https://github.com/RickdeJager/stegseek/releases/download/v0.6/stegseek_0.6-1.deb -o /tmp/stegseek_0.6-1.deb
+# RUN dpkg -i /tmp/stegseek_0.6-1.deb
 
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.1
 
 RUN groupadd --force -g $WWWGROUP sail
-RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
+RUN useradd -ms /bin/sh --no-user-group -g $WWWGROUP -u 1337 sail
 
 COPY start-container /usr/local/bin/start-container
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
