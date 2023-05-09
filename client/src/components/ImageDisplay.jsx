@@ -5,20 +5,31 @@ import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPreview } from './imageSlice'
+import images from '../services/api/images'
 const ImageDisplay = () => {
     const image = useSelector((state) => state.image.preview)
+
     const dispatch = useDispatch()
     const [isError, setIsError] = useState(false)
     const onDrop = useCallback(acceptedFiles => {
-        console.log(acceptedFiles)
         const file = acceptedFiles[0]
         dispatch(setPreview(URL.createObjectURL(file)));
+        fileUpload(file)
     }, [dispatch])
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    const { getRootProps, getInputProps, fileRejections } = useDropzone({
         onDrop,
-        accept: { 'image/png': ['.png'] },
+        // accept: { 'image/png': ['.png'] },
         maxFiles: 1
     })
+    const fileUpload = (file) => {
+        const formData = new FormData();
+        formData.append('file', file)
+
+        console.log(formData)
+        images.uploadImage(formData).then((res) => {
+            console.log(res)
+        });
+    }
 
     useEffect(() => {
         setIsError(fileRejections.length)
@@ -33,7 +44,7 @@ const ImageDisplay = () => {
             <div className={`${image ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'} transition-all h-full w-full }`}>
                 <div {...getRootProps({ className: `border-dashed border-2 transition-all  h-full rounded-[10px] p-[10px] flex items-center justify-center ${isError ? 'border-red-400 text-red-400' : 'border-slate-600'}` })}>
                     <input {...getInputProps({ className: 'transition-all' })} />
-                    Drag 'n' drop some files here, or click to select files
+                    Drag & drop files here, or click to select.
                 </div>
             </div>
         </div >

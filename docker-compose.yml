@@ -1,12 +1,38 @@
 # For more information: https://laravel.com/docs/sail
 version: '3'
 services:
+    inproxy:
+        build:
+            context: ./mitmproxy
+            dockerfile: inproxy_Dockerfile
+        volumes:
+            - './mitmproxy/wordlists:/steg'
+            - './mitmproxy/inproxy:/home'
+            - './mitmproxy/images:/images'
+        environment:
+            - API_KEY=500be545-d8df-4f3a-a347-1305c6168d06
+        networks:
+            - sail      
+
+    mitmproxy:
+        build:
+            context: ./mitmproxy
+            dockerfile: mitmproxy_Dockerfile
+        ports:
+            - '${FORWARD_MITMPROXY_PORT:-8180}:8080'
+        volumes:
+            - './mitmproxy/scripts:/home/mitmproxy/addons'
+            - './mitmproxy/images:/home/images'
+            - 'mitmproxy:/home/mitmproxy/.mitmproxy'
+        networks:
+            - sail
+
     laravel.test:
         build:
-            context: ./backend/vendor/laravel/sail/runtimes/8.1
+            context: ./backend
             dockerfile: Dockerfile
             args:
-                WWWGROUP: '${WWWGROUP}'
+                WWWGROUP: ${WWWGROUP}
         image: sail-8.1/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
@@ -14,7 +40,7 @@ services:
             - '${APP_PORT:-80}:80'
             - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         environment:
-            WWWUSER: '${WWWUSER}'
+            WWWUSER: ${WWWUSER}
             LARAVEL_SAIL: 1
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
@@ -24,21 +50,9 @@ services:
             - sail
         depends_on:
             - mysql
-            - redis
-            - meilisearch
             - mailhog
             - selenium
-    client:
-        container_name: client
-        build:
-            context: ./client
-            dockerfile: Dockerfile
-        volumes:
-            - './client:/app'
-        ports:
-            - 3000:3000
-        environment:
-            - CHOKIDAR_USEPOLLING=true
+
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -59,37 +73,7 @@ services:
             test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
             retries: 3
             timeout: 5s
-    redis:
-        image: 'redis:alpine'
-        ports:
-            - '${FORWARD_REDIS_PORT:-6379}:6379'
-        volumes:
-            - 'sail-redis:/data'
-        networks:
-            - sail
-        healthcheck:
-            test: [ "CMD", "redis-cli", "ping" ]
-            retries: 3
-            timeout: 5s
-    meilisearch:
-        image: 'getmeili/meilisearch:latest'
-        ports:
-            - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
-        volumes:
-            - 'sail-meilisearch:/meili_data'
-        networks:
-            - sail
-        healthcheck:
-            test:
-                [
-                    "CMD",
-                    "wget",
-                    "--no-verbose",
-                    "--spider",
-                    "http://localhost:7700/health"
-                ]
-            retries: 3
-            timeout: 5s
+
     mailhog:
         image: 'mailhog/mailhog:latest'
         ports:
@@ -97,21 +81,25 @@ services:
             - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
         networks:
             - sail
+
     selenium:
         image: 'selenium/standalone-chrome'
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
         volumes:
             - '/dev/shm:/dev/shm'
         networks:
             - sail
+
 networks:
     sail:
         driver: bridge
 volumes:
+    mitmproxy:
+        driver: local
     sail-mysql:
         driver: local
     sail-redis:
         driver: local
     sail-meilisearch:
+        driver: local
+    stegasaurus_minio:
         driver: local

@@ -1,0 +1,5 @@
+FROM mitmproxy/mitmproxy
+RUN pip install numpy
+RUN pip install pillow
+
+CMD ["mitmdump", "-s", "/home/mitmproxy/addons/addon.py"]
